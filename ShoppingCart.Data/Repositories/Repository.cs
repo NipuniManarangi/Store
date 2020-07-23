@@ -10,10 +10,12 @@ namespace ShoppingCart.Data.Repositories
     /// <summary>
     ///  Repository implementation
     /// </summary>
+#pragma warning disable CA1001 // Types that own disposable fields should be disposable
     public class Repository<T> : IRepository<T> where T : class
+
     {
-        private ShoppingCartDbContext context = null;
-        private DbSet<T> table = null;
+        private readonly ShoppingCartDbContext context = null;
+        private readonly DbSet<T> table = null;
 
         public Repository()
         {
@@ -22,8 +24,11 @@ namespace ShoppingCart.Data.Repositories
         }
         public Repository(ShoppingCartDbContext context)
         {
-            this.context = context;
-            table = context.Set<T>();
+            if (context != null)
+            {
+                this.context = context;
+                table = context.Set<T>();
+            }
         }
         public IEnumerable<T> GetAll()
         {

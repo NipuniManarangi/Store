@@ -20,25 +20,30 @@ namespace ShoppingCart.Data.Models
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            if(optionsBuilder != null) { 
             if (!optionsBuilder.IsConfigured)
             {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+
                 optionsBuilder.UseSqlServer("Server=DESKTOP-EN10G1A; Database=OnlineShopDB; Trusted_Connection=True; MultipleActiveResultSets=True;");
+            }
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Product>(entity =>
+            if (modelBuilder != null)
             {
-                entity.Property(e => e.Code).HasMaxLength(10);
+                modelBuilder.Entity<Product>(entity =>
+                {
+                    entity.Property(e => e.Code).HasMaxLength(10);
 
-                entity.Property(e => e.UnitPrice).HasColumnType("money");
-            });
+                    entity.Property(e => e.UnitPrice).HasColumnType("money");
+                });
 
-            OnModelCreatingPartial(modelBuilder);
-            modelBuilder.Entity<User>()
-                .HasKey(u => u.Email);
+                OnModelCreatingPartial(modelBuilder);
+                modelBuilder.Entity<User>()
+                    .HasKey(u => u.Email);
+            }
         }
 
         partial void OnModelCreatingPartial(ModelBuilder modelBuilder);

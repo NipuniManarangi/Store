@@ -11,10 +11,9 @@ namespace ShoppingCart.Data.Repositories
     public interface IUserRepository<T> where T:class
     {
         IEnumerable<T> GetAll();
-       // T GetByEmail(string email);
         T GetById(object id);
-        void Insert(T obj);
-        void Update(T obj);
+        void Insert(T data);
+        void Update(T data);
         void Delete(object id);
         void Save();
     }

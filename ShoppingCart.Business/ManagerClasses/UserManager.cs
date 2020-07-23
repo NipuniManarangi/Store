@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.IdentityModel.Tokens;
 using ShoppingCart.Common;
 using ShoppingCart.Data.Models;
 using System;
@@ -12,11 +13,15 @@ namespace ShoppingCart.Business.ManagerClasses
 {
     /// <summary>
     /// Business manager class with all the user related logic
+   
     /// </summary>
     public class UserManager : BaseManager
     {
+      
         User user = new User();
-        //private readonly ApplicationSettings _appSettings;
+        //key used to encrypt the password
+        public static string key = "asdfrtgbvcqwe@59#";
+        
         /// <summary>
         /// method to register user
         /// </summary>
@@ -34,8 +39,10 @@ namespace ShoppingCart.Business.ManagerClasses
             //operationResult.Status = Enum.Status.Success;
             else
             {
-                operationResult.Message = Constant.SuccessMessage;
+                
                 //user.UserId = userDTO.UserId;
+                operationResult= PasswordEncrypt(userDTO.Password);
+                user.Password = operationResult.Data;
                 user.FirstName = userDTO.FirstName;
                 user.LastName = userDTO.LastName;
                 user.Email = userDTO.Email;
@@ -44,9 +51,10 @@ namespace ShoppingCart.Business.ManagerClasses
                 user.Address_Line2 = userDTO.Address_Line2;
                 user.State = userDTO.State;
                 user.PostalCode = userDTO.PostalCode;
-                user.Password = userDTO.Password;
+                //user.Password = userDTO.Password;
                 UserRepository.Insert(user);
                 UserRepository.Save();
+                operationResult.Message = Constant.SuccessMessage;
                 //check id
                 //if (userDTO.UserId > 0)
                 //{
@@ -64,16 +72,18 @@ namespace ShoppingCart.Business.ManagerClasses
         public OperationResult UserExists(string email)
         {
             OperationResult operationResult = new OperationResult();
-            var registereduser = UserRepository.GetById(email);
-            if (registereduser.Email != null)
-            {
-                operationResult.Status = Enum.Status.Success;
-                return operationResult;
 
+            operationResult.Data = UserRepository.GetById(email);
+
+            if (operationResult.Data == null)
+            {
+                operationResult.Status = Enum.Status.Error;
+                return operationResult;
             }
             else
             {
-                operationResult.Status = Enum.Status.Error;
+                operationResult.Status = Enum.Status.Success;
+                operationResult.Data = null;
                 return operationResult;
             }
         }
@@ -81,16 +91,15 @@ namespace ShoppingCart.Business.ManagerClasses
         {
             OperationResult operationResult = new OperationResult();
             
-
             user.Email = loginDTO.Email;
-            user.Password = loginDTO.Password;
-
+            operationResult = PasswordEncrypt(loginDTO.Password);
+            user.Password = operationResult.Data;
             var email = UserRepository.GetById(user.Email);
-            //var pass = UserRepository.GetById(user.Password);
-            if (email != null)
+
+            if ((email.Email==user.Email) && (email.Password ==user.Password))
             {
                 operationResult.Status = Enum.Status.Success;
-               // operationResult.Message = Constant.SuccessMessage;
+               
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[] {
@@ -103,13 +112,15 @@ namespace ShoppingCart.Business.ManagerClasses
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
                 var token = tokenHandler.WriteToken(securityToken);
                 operationResult.Message = token;
-                operationResult.Data = email;
+                operationResult.Data = null;
 
 
             }
             else
             {
                 operationResult.Message = "Username or Password is incorrect";
+                operationResult.Status = Enum.Status.Error;
+                operationResult.Data = null;
             }
                
             return operationResult;
@@ -124,6 +135,16 @@ namespace ShoppingCart.Business.ManagerClasses
             var signinUser = UserRepository.GetById(email);
             operationResult.Data = signinUser;
             return operationResult;
+
+        }
+        public OperationResult PasswordEncrypt(string password)
+        {
+            OperationResult operationResult = new OperationResult();
+            password += key;
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            operationResult.Data = Convert.ToBase64String(passwordBytes);
+            return operationResult;
+
 
         }
     }

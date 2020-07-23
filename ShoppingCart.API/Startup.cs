@@ -25,13 +25,16 @@ namespace ShoppingCart.API
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+       
         public void ConfigureServices(IServiceCollection services)
         {
             //Iject Appsettings
             //services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
+
             services.AddRazorPages();
+
             services.AddMvc(option => option.EnableEndpointRouting = false);
+
             services.AddCors(options =>
             {
                 options.AddPolicy(
@@ -45,9 +48,10 @@ namespace ShoppingCart.API
 
 
                 );
-            //services.AddControllers();
+            
             //JWT authentication
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString());
+
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -70,8 +74,10 @@ namespace ShoppingCart.API
 
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        
+#pragma warning disable CA1822 // Mark members as static
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+#pragma warning restore CA1822 // Mark members as static
         {
             if (env.IsDevelopment())
             {
@@ -80,22 +86,19 @@ namespace ShoppingCart.API
             else
             {
                 app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+               
                 app.UseHsts();
             }
             app.UseAuthentication();
-            app.UseCors("CorsPolicy");
-         
-            //app.UseCors(builder =>
-            //builder.WithOrigins(Configuration["ApplicationSettings:Client_URL"].ToString())
-            //.AllowAnyHeader()
 
-            //.AllowCredentials()
-            //.AllowAnyMethod());
+            app.UseCors("CorsPolicy");
 
             app.UseHttpsRedirection();
+
             app.UseDefaultFiles();
+
             app.UseStaticFiles();
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute("default", "{controller}/{action}/{id}");

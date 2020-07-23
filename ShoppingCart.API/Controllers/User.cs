@@ -31,17 +31,18 @@ namespace ShoppingCart.API.Controllers
         [HttpPost("Register")]
         public OperationResult Register(UserDTO userDTO)
         {
-            //user.UserId = userDTO.UserId;
-            user.FirstName = userDTO.FirstName;
-            user.LastName = userDTO.LastName;
-            user.Email = userDTO.Email;
-            user.ContatctNo = userDTO.ContatctNo;
-            user.Address_Line1 = userDTO.Address_Line1;
-            user.Address_Line2 = userDTO.Address_Line2;
-            user.State = userDTO.State;
-            user.PostalCode = userDTO.PostalCode;
-            user.Password = userDTO.Password;
-
+            if (userDTO != null)
+            {
+                user.FirstName = userDTO.FirstName;
+                user.LastName = userDTO.LastName;
+                user.Email = userDTO.Email;
+                user.ContatctNo = userDTO.ContatctNo;
+                user.Address_Line1 = userDTO.Address_Line1;
+                user.Address_Line2 = userDTO.Address_Line2;
+                user.State = userDTO.State;
+                user.PostalCode = userDTO.PostalCode;
+                user.Password = userDTO.Password;
+            }
             OperationResult operationResult = userManager.Register(user);
 
             return operationResult;
@@ -49,10 +50,14 @@ namespace ShoppingCart.API.Controllers
         [HttpPost("Login")]
         public OperationResult Login(LoginDTO loginDTO)
         {
-            loginuser.Email = loginDTO.Email;
-            loginuser.Password = loginDTO.Password;
-            OperationResult operation = userManager.Login(loginuser);
-            return operation;
+            if (loginDTO != null)
+            {
+                loginuser.Email = loginDTO.Email;
+                loginuser.Password = loginDTO.Password;
+            }
+                OperationResult operation = userManager.Login(loginuser);
+                return operation;
+            
         }
         [HttpGet("GetUserDetails")]
         [Authorize]
