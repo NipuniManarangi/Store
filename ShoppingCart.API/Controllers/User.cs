@@ -10,7 +10,9 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CSharp.RuntimeBinder;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using ShoppingCart.Business.ManagerClasses;
 using ShoppingCart.Common;
 
@@ -31,33 +33,72 @@ namespace ShoppingCart.API.Controllers
         [HttpPost("Register")]
         public OperationResult Register(UserDTO userDTO)
         {
-            if (userDTO != null)
+            Log.Information("Register method called at {logtime}", DateTime.Now);
+            OperationResult operationResult = new OperationResult();
+            try
             {
-                user.FirstName = userDTO.FirstName;
-                user.LastName = userDTO.LastName;
-                user.Email = userDTO.Email;
-                user.ContatctNo = userDTO.ContatctNo;
-                user.Address_Line1 = userDTO.Address_Line1;
-                user.Address_Line2 = userDTO.Address_Line2;
-                user.State = userDTO.State;
-                user.PostalCode = userDTO.PostalCode;
-                user.Password = userDTO.Password;
-            }
-            OperationResult operationResult = userManager.Register(user);
 
-            return operationResult;
+
+                if (userDTO != null)
+                {
+                    user.FirstName = userDTO.FirstName;
+                    user.LastName = userDTO.LastName;
+                    user.Email = userDTO.Email;
+                    user.ContatctNo = userDTO.ContatctNo;
+                    user.Address_Line1 = userDTO.Address_Line1;
+                    user.Address_Line2 = userDTO.Address_Line2;
+                    user.State = userDTO.State;
+                    user.PostalCode = userDTO.PostalCode;
+                    user.Password = userDTO.Password;
+                }
+                    operationResult = userManager.Register(user);
+                Log.Information("Register method executed at {logtime}", DateTime.Now);
+                return operationResult;
+            }
+#pragma warning disable CA1031 
+            catch (Exception ex)
+
+            {
+                Log.Error("Error Occured :{ex}", ex);
+                operationResult.Message = ex.Message;
+                return operationResult;
+              
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
+           
         }
         [HttpPost("Login")]
         public OperationResult Login(LoginDTO loginDTO)
         {
-            if (loginDTO != null)
+            Log.Information("Login method called at {logtime}",DateTime.Now);
+            OperationResult operationResult = new OperationResult();
+            try
             {
-                loginuser.Email = loginDTO.Email;
-                loginuser.Password = loginDTO.Password;
+                if (loginDTO != null)
+                {
+                    loginuser.Email = loginDTO.Email;
+                    loginuser.Password = loginDTO.Password;
+                }
+                operationResult = userManager.Login(loginuser);
+                Log.Information("Login method executed at {logtime}", DateTime.Now);
+                return operationResult;
             }
-                OperationResult operation = userManager.Login(loginuser);
-                return operation;
-            
+            catch(Exception ex)
+            {
+                Log.Error("Error Occured :{ex}", ex);
+                operationResult.Message = ex.Message;
+                return operationResult;
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
+
         }
         [HttpGet("GetUserDetails")]
         [Authorize]

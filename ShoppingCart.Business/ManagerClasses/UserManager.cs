@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using ShoppingCart.Common;
 using ShoppingCart.Data.Models;
 using System;
@@ -21,6 +22,7 @@ namespace ShoppingCart.Business.ManagerClasses
         User user = new User();
         //key used to encrypt the password
         public static string key = "asdfrtgbvcqwe@59#";
+        public static string tokenKey = "1234567890123456";
         
         /// <summary>
         /// method to register user
@@ -30,18 +32,21 @@ namespace ShoppingCart.Business.ManagerClasses
             
             //new operarion result object to hold responce data
             OperationResult operationResult = new OperationResult();
+            Log.Information("Need to check whether user exists in the system at {logtime}", DateTime.Now);
             operationResult = UserExists(userDTO.Email);
+
             if(operationResult.Status == Enum.Status.Success)
             {
+                Log.Information("User exists at {logtime}", DateTime.Now);
                 operationResult.Message = "user already exists!";
                 operationResult.Status = Enum.Status.Error;
             }
-            //operationResult.Status = Enum.Status.Success;
+            
             else
             {
-                
-                //user.UserId = userDTO.UserId;
-                operationResult= PasswordEncrypt(userDTO.Password);
+
+                Log.Information("Started to register new user at {logtime}", DateTime.Now);
+                operationResult = PasswordEncrypt(userDTO.Password);
                 user.Password = operationResult.Data;
                 user.FirstName = userDTO.FirstName;
                 user.LastName = userDTO.LastName;
@@ -51,16 +56,12 @@ namespace ShoppingCart.Business.ManagerClasses
                 user.Address_Line2 = userDTO.Address_Line2;
                 user.State = userDTO.State;
                 user.PostalCode = userDTO.PostalCode;
-                //user.Password = userDTO.Password;
+
                 UserRepository.Insert(user);
                 UserRepository.Save();
                 operationResult.Message = Constant.SuccessMessage;
-                //check id
-                //if (userDTO.UserId > 0)
-                //{
+                Log.Information("New user registration successful at {logtime}", DateTime.Now);
 
-
-                //}
             }
 
 
@@ -72,7 +73,7 @@ namespace ShoppingCart.Business.ManagerClasses
         public OperationResult UserExists(string email)
         {
             OperationResult operationResult = new OperationResult();
-
+            Log.Information("Checking user exists in the system at {logtime}", DateTime.Now);
             operationResult.Data = UserRepository.GetById(email);
 
             if (operationResult.Data == null)
@@ -94,19 +95,28 @@ namespace ShoppingCart.Business.ManagerClasses
             user.Email = loginDTO.Email;
             operationResult = PasswordEncrypt(loginDTO.Password);
             user.Password = operationResult.Data;
-            var email = UserRepository.GetById(user.Email);
+            Log.Information("Matching user credentials at {logtime}", DateTime.Now);
+            var userinfo = UserRepository.GetById(user.Email);
+            if(userinfo is null)
+            {
+                Log.Information("User does not exists {logtime}", DateTime.Now);
+                operationResult.Message = "User does not exists";
+                operationResult.Status = Enum.Status.Error;
+                operationResult.Data = null;
 
-            if ((email.Email==user.Email) && (email.Password ==user.Password))
+                Log.Information("Login method failed at {logtime}", DateTime.Now);
+            }
+            else if ((userinfo.Email==user.Email) && (userinfo.Password ==user.Password))
             {
                 operationResult.Status = Enum.Status.Success;
-               
+                Log.Information("JWT token authentication started at {logtime}", DateTime.Now);
                 var tokenDescriptor = new SecurityTokenDescriptor
                 {
                     Subject = new ClaimsIdentity(new Claim[] {
-                       new Claim("Email", email.Email)
+                       new Claim("Email", userinfo.Email)
                     }),
                     Expires = DateTime.UtcNow.AddDays(1),
-                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("1234567890123456")), SecurityAlgorithms.HmacSha256Signature)
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey)), SecurityAlgorithms.HmacSha256Signature)
                 };
                 var tokenHandler = new JwtSecurityTokenHandler();
                 var securityToken = tokenHandler.CreateToken(tokenDescriptor);
@@ -114,6 +124,7 @@ namespace ShoppingCart.Business.ManagerClasses
                 operationResult.Message = token;
                 operationResult.Data = null;
 
+                Log.Information("Login method successful at {logtime}", DateTime.Now);
 
             }
             else
@@ -121,6 +132,8 @@ namespace ShoppingCart.Business.ManagerClasses
                 operationResult.Message = "Username or Password is incorrect";
                 operationResult.Status = Enum.Status.Error;
                 operationResult.Data = null;
+
+                Log.Information("Login method failed at {logtime}", DateTime.Now);
             }
                
             return operationResult;
@@ -143,7 +156,11 @@ namespace ShoppingCart.Business.ManagerClasses
             password += key;
             var passwordBytes = Encoding.UTF8.GetBytes(password);
             operationResult.Data = Convert.ToBase64String(passwordBytes);
+
+            Log.Information("Password Encryption successful at {logtime}", DateTime.Now);
+
             return operationResult;
+            
 
 
         }

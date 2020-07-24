@@ -1,8 +1,11 @@
-﻿using ShoppingCart.Business.ManagerClasses;
+﻿using Serilog;
+using ShoppingCart.Business.ManagerClasses;
 using ShoppingCart.Common;
 using ShoppingCart.Data.Models;
+using System;
 using System.Linq;
 using System.Net;
+using Enum = ShoppingCart.Common.Enum;
 
 namespace ShoppingCart.Business.Manager
 {
@@ -26,11 +29,13 @@ namespace ShoppingCart.Business.Manager
             //check if id is available
             if (id == null)
             {
+                Log.Information("GetProducts method without an id is called at {logtime}", DateTime.Now);
                 var productList = ProductRepository.GetAll().ToList();
                 operationResult.Data = productList;
             }
             else
             {
+                Log.Information("GetProducts method with an id is called at {logtime}", DateTime.Now);
                 var product = ProductRepository.GetById(id);
                 operationResult.Data = product;
             }

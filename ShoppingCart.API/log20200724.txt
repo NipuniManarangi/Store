@@ -1,0 +1,36 @@
+2020-07-24 11:01:00.592 +05:30 [INF] Application started at "2020-07-24T11:01:00.5864154+05:30"
+2020-07-24 11:01:03.669 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 11:01:56.858 +05:30 [INF] Application started at "2020-07-24T11:01:56.8505808+05:30"
+2020-07-24 11:01:58.566 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 11:02:46.015 +05:30 [INF] Application started at "2020-07-24T11:02:46.0069102+05:30"
+2020-07-24 11:02:47.847 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 11:02:55.225 +05:30 [INF] Login method called at "2020-07-24T11:02:55.2255810+05:30"
+2020-07-24 11:51:23.350 +05:30 [INF] Application started at "2020-07-24T11:51:23.3458285+05:30"
+2020-07-24 11:51:25.240 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 11:51:29.909 +05:30 [INF] GetProducts method called at "2020-07-24T11:51:29.9098552+05:30"
+2020-07-24 11:51:29.917 +05:30 [INF] GetProducts method without an id is called at "2020-07-24T11:51:29.9172859+05:30"
+2020-07-24 12:02:34.969 +05:30 [INF] Login method called at "2020-07-24T12:02:34.9699093+05:30"
+2020-07-24 12:02:34.987 +05:30 [INF] Password Encryption successful at "2020-07-24T12:02:34.9876000+05:30"
+2020-07-24 12:02:35.043 +05:30 [INF] Matching user credentials at "2020-07-24T12:02:35.0431217+05:30"
+2020-07-24 12:02:35.242 +05:30 [INF] JWT token authentication started at "2020-07-24T12:02:35.2426938+05:30"
+2020-07-24 12:02:35.407 +05:30 [INF] Login method successful at "2020-07-24T12:02:35.4079213+05:30"
+2020-07-24 12:02:35.408 +05:30 [INF] Login method executed successfully at "2020-07-24T12:02:35.4081263+05:30"
+2020-07-24 15:55:19.571 +05:30 [INF] Application started at "2020-07-24T15:55:19.5589884+05:30"
+2020-07-24 15:55:22.556 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 15:56:27.544 +05:30 [INF] GetProducts method called at "2020-07-24T15:56:27.5439723+05:30"
+2020-07-24 15:56:27.562 +05:30 [INF] GetProducts method without an id is called at "2020-07-24T15:56:27.5620311+05:30"
+2020-07-24 16:03:35.979 +05:30 [INF] Application started at "2020-07-24T16:03:35.9669981+05:30"
+2020-07-24 16:03:38.562 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 16:03:55.207 +05:30 [INF] Login method called at "2020-07-24T16:03:55.2070458+05:30"
+2020-07-24 16:03:55.223 +05:30 [INF] Password Encryption successful at "2020-07-24T16:03:55.2230687+05:30"
+2020-07-24 16:03:55.304 +05:30 [INF] Matching user credentials at "2020-07-24T16:03:55.3043406+05:30"
+2020-07-24 16:03:57.221 +05:30 [INF] Login method failed at "2020-07-24T16:03:57.2210786+05:30"
+2020-07-24 16:03:57.221 +05:30 [INF] Login method executed successfully at "2020-07-24T16:03:57.2212219+05:30"
+2020-07-24 16:07:04.147 +05:30 [INF] Application started at "2020-07-24T16:07:04.1374198+05:30"
+2020-07-24 16:07:06.979 +05:30 [WRN] Failed to determine the https port for redirect.
+2020-07-24 16:08:52.619 +05:30 [INF] Login method called at "2020-07-24T16:08:52.6194870+05:30"
+2020-07-24 16:08:52.639 +05:30 [INF] Password Encryption successful at "2020-07-24T16:08:52.6395037+05:30"
+2020-07-24 16:08:52.754 +05:30 [INF] Matching user credentials at "2020-07-24T16:08:52.7547005+05:30"
+2020-07-24 16:08:55.703 +05:30 [INF] User does not exists "2020-07-24T16:08:55.7034900+05:30"
+2020-07-24 16:08:55.704 +05:30 [INF] Login method failed at "2020-07-24T16:08:55.7041505+05:30"
+2020-07-24 16:08:55.704 +05:30 [INF] Login method executed at "2020-07-24T16:08:55.7043299+05:30"

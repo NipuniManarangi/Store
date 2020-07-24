@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 using ShoppingCart.Business.Manager;
 using ShoppingCart.Common;
 
@@ -25,8 +26,27 @@ namespace ShoppingCart.API.Controllers
         [HttpGet("GetProducts/{id:int?}")]
         public OperationResult  Get(int? id)
         {
-            OperationResult operationResult = productManager.GetAllProducts(id);
-            return operationResult; 
+            Log.Information("GetProducts method called at {logtime}", DateTime.Now);
+            OperationResult operationResult = new OperationResult();
+            try 
+            {
+                operationResult = productManager.GetAllProducts(id);
+                return operationResult;
+            }
+#pragma warning disable CA1031 
+            catch(Exception ex)
+
+            {
+                Log.Error("Error Occured :{ex}", ex);
+                operationResult.Message = ex.Message;
+                return operationResult;
+
+            }
+            finally
+            {
+                Log.CloseAndFlush();
+            }
+
         }
     }
 }
